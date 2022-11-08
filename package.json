@@ -26,7 +26,10 @@
   },
   "dependencies": {
     "express": "^4.18.2",
+    "express-winston": "^4.2.0",
     "mongoose": "^6.7.1",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "winson": "^1.0.0",
+    "winston": "^3.8.2"
   }
 }
