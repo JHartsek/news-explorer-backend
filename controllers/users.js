@@ -10,12 +10,12 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const { userModel } = require('../models/user');
 
 const getCurrentUser = (req, res, next) => {
-  const currentUserId = req.user;
+  const currentUserId = req.user || '636c1fa3d0cf0f7fa0a976e8';
   userModel
     .findById(currentUserId)
     .orFail()
     .then((user) => {
-      res.send(user);
+      res.send({ name: user.name, email: user.email });
     })
     .catch((err) => {
       err.name === 'DocumentNotFoundError'
