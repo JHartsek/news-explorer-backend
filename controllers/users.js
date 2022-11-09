@@ -1,6 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const { ConflictError } = require('../errors/ConflictError');
+const { UnauthorizedError } = require('../errors/UnauthorizedError');
+const { ResourceNotFoundError } = require('../errors/ResourceNotFoundError');
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const { userModel } = require('../models/user');
@@ -14,7 +18,7 @@ const getCurrentUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      res.send(err);
+      err.name === 'DocumentNotFoundError' ? new ResourceNotFoundError('Could not find requested card') : res.send(err);
     });
 };
 
@@ -25,7 +29,7 @@ const createUser = (req, res, next) => {
     .select('passord')
     .then((account) => {
       if (account) {
-        return Promise.reject(new Error('This email has already been taken!'));
+        return Promise.reject(new ConflictError('This email has already been taken!'));
       }
       bcrypt
         .hash(password, 10)
@@ -52,14 +56,14 @@ const login = (req, res, next) => {
     .select('password')
     .then((account) => {
       if (!account) {
-        return Promise.reject(new Error('Incorrect email or password'));
+        return Promise.reject(new UnauthorizedError('Incorrect email or password'));
       }
       user = account;
       return bcrypt.compare(password, user.password);
     })
     .then((authenticated) => {
       if (!authenticated) {
-        return Promise.reject(new Error('Incorrect email or password'));
+        return Promise.reject(new UnauthorizedError('Incorrect email or password'));
       }
       const token = jwt.sign(
         { _id: user._id },

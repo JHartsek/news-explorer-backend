@@ -1,4 +1,6 @@
 const { articleModel } = require('../models/article');
+const { ForbiddenActionError } = require('../errors/ForbiddenActionError');
+const { ResourceNotFoundError } = require('../errors/ResourceNotFoundError');
 
 const getSavedArticles = (req, res, next) => {
   articleModel
@@ -25,7 +27,7 @@ const saveArticle = (req, res, next) => {
       res.send(article);
     })
     .catch((err) => {
-      res.send(err);
+      err.name === 'DocumentNotFoundError' ? new ResourceNotFoundError('Could not find requested card') : res.send(err);
     });
 };
 
@@ -44,10 +46,10 @@ const deleteArticle = (req, res, next) => {
             res.send({ message: 'Article removed!' });
           });
       }
-      throw new Error('Can\'t delete another user\'s articles');
+      throw new ForbiddenActionError('Can\'t delete another user\'s articles');
     })
     .catch((err) => {
-      res.send(err);
+      err.name === 'DocumentNotFoundError' ? new ResourceNotFoundError('Could not find requested card') : res.send(err);
     });
 };
 
