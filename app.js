@@ -10,6 +10,7 @@ const { requestLogger, errorLogger } = require('./middleware/logger');
 const errorHandler = require('./middleware/errors');
 
 const app = express();
+app.use(express.json());
 app.use(helmet());
 mongoose.connect('mongodb://localhost:27017/news');
 const PORT = 3000;
