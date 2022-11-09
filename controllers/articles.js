@@ -17,7 +17,7 @@ const saveArticle = (req, res, next) => {
   const {
     keyword, title, text, date, source, link, image,
   } = req.body;
-  const owner = req.user._id;
+  const owner = req.user._id || '636c1fa3d0cf0f7fa0a976e8';
 
   articleModel
     .create({
@@ -28,6 +28,7 @@ const saveArticle = (req, res, next) => {
       source,
       link,
       image,
+      owner,
     })
     .then((article) => {
       res.send(article);
@@ -40,19 +41,21 @@ const saveArticle = (req, res, next) => {
 };
 
 const deleteArticle = (req, res, next) => {
+  const user = req.user._id || '636c1fa3d0cf0f7fa0a976e8';
   let selectedArticleOwner;
   articleModel
     .findById(req.params.articleId)
     .orFail()
     .then((article) => {
       selectedArticleOwner = article.owner.toString();
-      if (req.user._id === selectedArticleOwner) {
+      if (user === selectedArticleOwner) {
         articleModel
           .findByIdAndRemove(req.params.articleId)
           .orFail()
           .then(() => {
             res.send({ message: 'Article removed!' });
           });
+        return;
       }
       throw new ForbiddenActionError("Can't delete another user's articles");
     })
