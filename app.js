@@ -21,6 +21,11 @@ app.post('/signin', login);
 
 app.use(errorLogger);
 
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({ message: statusCode === 500 ? 'An error has occured on the server' : message });
+});
+
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });

@@ -9,7 +9,7 @@ const getSavedArticles = (req, res, next) => {
       res.send(articles);
     })
     .catch((err) => {
-      res.send(err);
+      next(err);
     });
 };
 
@@ -27,7 +27,7 @@ const saveArticle = (req, res, next) => {
       res.send(article);
     })
     .catch((err) => {
-      err.name === 'DocumentNotFoundError' ? new ResourceNotFoundError('Could not find requested card') : res.send(err);
+      err.name === 'DocumentNotFoundError' ? next(new ResourceNotFoundError('Could not find requested card')) : next(err);
     });
 };
 
@@ -49,7 +49,7 @@ const deleteArticle = (req, res, next) => {
       throw new ForbiddenActionError('Can\'t delete another user\'s articles');
     })
     .catch((err) => {
-      err.name === 'DocumentNotFoundError' ? new ResourceNotFoundError('Could not find requested card') : res.send(err);
+      err.name === 'DocumentNotFoundError' ? next(new ResourceNotFoundError('Could not find requested card')) : next(err);
     });
 };
 

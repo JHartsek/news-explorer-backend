@@ -18,7 +18,7 @@ const getCurrentUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      err.name === 'DocumentNotFoundError' ? new ResourceNotFoundError('Could not find requested card') : res.send(err);
+      err.name === 'DocumentNotFoundError' ? next(new ResourceNotFoundError('Could not find requested card')) : next(err);
     });
 };
 
@@ -40,11 +40,11 @@ const createUser = (req, res, next) => {
           res.send(user);
         })
         .catch((err) => {
-          res.send(err);
+          next(err);
         });
     })
     .catch((err) => {
-      res.send(err);
+      next(err);
     });
 };
 
@@ -73,7 +73,7 @@ const login = (req, res, next) => {
       res.send({ user, token });
     })
     .catch((err) => {
-      res.send(err);
+      next(err);
     });
 };
 
