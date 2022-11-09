@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const { Joi, celebrate, errors } = require('celebrate');
+const { errors } = require('celebrate');
+const { validateCreateUser, validateLogin } = require('./helpers/validators');
 const userRouter = require('./routes/users');
 const articleRouter = require('./routes/articles');
 const { createUser, login } = require('./controllers/users');
@@ -18,27 +19,8 @@ app.use(requestLogger);
 app.use('/users', userRouter);
 app.use('/articles', articleRouter);
 
-app.post(
-  '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
-  createUser,
-);
-app.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
-  login,
-);
+app.post('/signup', validateCreateUser, createUser);
+app.post('/signin', validateLogin, login);
 
 app.use(errorLogger);
 app.use(errors());
