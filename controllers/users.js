@@ -18,7 +18,7 @@ const getCurrentUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      err.name === 'DocumentNotFoundError' ? next(new ResourceNotFoundError('Could not find requested card')) : next(err);
+      err.name === 'DocumentNotFoundError' ? next(new ResourceNotFoundError('Could not find requested user')) : next(err);
     });
 };
 

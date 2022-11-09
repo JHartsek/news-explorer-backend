@@ -21,13 +21,21 @@ const saveArticle = (req, res, next) => {
 
   articleModel
     .create({
-      keyword, title, text, date, source, link, image, owner,
+      keyword,
+      title,
+      text,
+      date,
+      source,
+      link,
+      image,
     })
     .then((article) => {
       res.send(article);
     })
     .catch((err) => {
-      err.name === 'DocumentNotFoundError' ? next(new ResourceNotFoundError('Could not find requested card')) : next(err);
+      err.name === 'DocumentNotFoundError'
+        ? next(new ResourceNotFoundError('Could not find requested article'))
+        : next(err);
     });
 };
 
@@ -46,10 +54,12 @@ const deleteArticle = (req, res, next) => {
             res.send({ message: 'Article removed!' });
           });
       }
-      throw new ForbiddenActionError('Can\'t delete another user\'s articles');
+      throw new ForbiddenActionError("Can't delete another user's articles");
     })
     .catch((err) => {
-      err.name === 'DocumentNotFoundError' ? next(new ResourceNotFoundError('Could not find requested card')) : next(err);
+      err.name === 'DocumentNotFoundError'
+        ? next(new ResourceNotFoundError('Could not find requested article'))
+        : next(err);
     });
 };
 
