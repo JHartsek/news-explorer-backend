@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const { Joi, celebrate, errors } = require('celebrate');
 const userRouter = require('./routes/users');
 const articleRouter = require('./routes/articles');
 const { createUser, login } = require('./controllers/users');
@@ -17,11 +18,30 @@ app.use(requestLogger);
 app.use('/users', userRouter);
 app.use('/articles', articleRouter);
 
-app.post('/signup', createUser);
-app.post('/signin', login);
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    }),
+  }),
+  createUser,
+);
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    }),
+  }),
+  login,
+);
 
 app.use(errorLogger);
-
+app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
