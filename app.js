@@ -5,6 +5,7 @@ const userRouter = require('./routes/users');
 const articleRouter = require('./routes/articles');
 const { createUser, login } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middleware/logger');
+const errorHandler = require('./middleware/errors');
 
 const app = express();
 app.use(helmet());
@@ -21,10 +22,7 @@ app.post('/signin', login);
 
 app.use(errorLogger);
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({ message: statusCode === 500 ? 'An error has occured on the server' : message });
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
