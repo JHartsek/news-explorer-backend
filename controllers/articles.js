@@ -17,7 +17,7 @@ const saveArticle = (req, res, next) => {
   const {
     keyword, title, text, date, source, link, image,
   } = req.body;
-  const owner = req.user._id || '636c1fa3d0cf0f7fa0a976e8';
+  const owner = req.user || '636c1fa3d0cf0f7fa0a976e8';
 
   articleModel
     .create({
@@ -41,7 +41,7 @@ const saveArticle = (req, res, next) => {
 };
 
 const deleteArticle = (req, res, next) => {
-  const user = req.user._id || '636c1fa3d0cf0f7fa0a976e8';
+  const user = req.user || '636c1fa3d0cf0f7fa0a976e8';
   let selectedArticleOwner;
   articleModel
     .findById(req.params.articleId)
