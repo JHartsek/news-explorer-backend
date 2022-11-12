@@ -10,9 +10,8 @@ const { createUser, login } = require('../controllers/users');
 router.post('/signup', validateCreateUser, createUser);
 router.post('/signin', validateLogin, login);
 
-router.use(auth);
-router.use('/users', userRouter);
-router.use('/articles', articleRouter);
+router.use('/users', auth, userRouter);
+router.use('/articles', auth, articleRouter);
 
 module.exports = {
   router,
