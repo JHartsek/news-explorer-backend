@@ -10,7 +10,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const { userModel } = require('../models/user');
 
 const getCurrentUser = (req, res, next) => {
-  const currentUserId = req.user || '636c1fa3d0cf0f7fa0a976e8';
+  const currentUserId = '637024abdf8cf20c35a80792';
   userModel
     .findById(currentUserId)
     .orFail()
