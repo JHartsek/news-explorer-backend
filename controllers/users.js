@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { ConflictError } = require('../errors/ConflictError');
 const { UnauthorizedError } = require('../errors/UnauthorizedError');
 const { ResourceNotFoundError } = require('../errors/ResourceNotFoundError');
+const { BadRequestError } = require('../errors/BadRequestError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -43,11 +44,15 @@ const createUser = (req, res, next) => {
           });
         })
         .catch((err) => {
-          next(err);
+          err.name === 'ValidationError'
+            ? next(new BadRequestError('Invalid data submitted'))
+            : next(err);
         });
     })
     .catch((err) => {
-      next(err);
+      err.name === 'ValidationError'
+        ? next(new BadRequestError('Invalid data submitted'))
+        : next(err);
     });
 };
 
