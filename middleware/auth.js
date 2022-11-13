@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { UnauthorizedError } = require('../errors/UnauthorizedError');
+require('dotenv').config();
+
+const { JWT_SECRET = 'encoding-string' } = process.env;
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
@@ -9,7 +12,7 @@ const auth = (req, res, next) => {
   const token = authorization.replace('Bearer ', '');
   let payload;
   try {
-    payload = jwt.verify(token, 'encoding-string');
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     throw new UnauthorizedError('Authentication failed!');
   }
