@@ -16,6 +16,8 @@ app.options('*', cors());
 app.use(express.json());
 app.use(helmet());
 // app.use(limiter);
+require('dotenv').config();
+
 mongoose.connect('mongodb://localhost:27017/news');
 const PORT = 3000;
 
