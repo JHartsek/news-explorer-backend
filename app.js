@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
-// const { limiter } = require('./utils/limiter');
+const { limiter } = require('./utils/limiter');
 const { router } = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const errorHandler = require('./middleware/errors');
@@ -13,7 +13,7 @@ app.use(cors());
 app.options('*', cors());
 app.use(express.json());
 app.use(helmet());
-// app.use(limiter);
+app.use(limiter);
 require('dotenv').config();
 
 const { PORT = 3000, DATABASE = 'mongodb://localhost:27017/news' } = process.env;
