@@ -1,6 +1,7 @@
 const { articleModel } = require('../models/article');
 const { ForbiddenActionError } = require('../errors/ForbiddenActionError');
 const { ResourceNotFoundError } = require('../errors/ResourceNotFoundError');
+const { BadRequestError } = require('../errors/BadRequestError');
 
 const getSavedArticles = (req, res, next) => {
   articleModel
@@ -34,8 +35,8 @@ const saveArticle = (req, res, next) => {
       res.send(article);
     })
     .catch((err) => {
-      err.name === 'DocumentNotFoundError'
-        ? next(new ResourceNotFoundError('Could not find requested article'))
+      err.name === 'ValidationError'
+        ? next(new BadRequestError('Invalid data submitted'))
         : next(err);
     });
 };
