@@ -7,6 +7,7 @@ const { auth } = require('../middleware/auth');
 const userRouter = require('./users');
 const articleRouter = require('./articles');
 const { ResourceNotFoundError } = require('../errors/ResourceNotFoundError');
+const { pathNotFoundMsg } = require('../utils/constants');
 
 router.post('/signup', validateCreateUser, createUser);
 router.post('/signin', validateLogin, login);
@@ -15,7 +16,7 @@ router.use('/users', auth, userRouter);
 router.use('/articles', auth, articleRouter);
 
 router.use('/', (req, res) => {
-  throw new ResourceNotFoundError('Path not found');
+  throw new ResourceNotFoundError(pathNotFoundMsg);
 });
 
 module.exports = {

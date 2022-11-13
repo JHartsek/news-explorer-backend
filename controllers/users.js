@@ -5,6 +5,9 @@ const { ConflictError } = require('../errors/ConflictError');
 const { UnauthorizedError } = require('../errors/UnauthorizedError');
 const { ResourceNotFoundError } = require('../errors/ResourceNotFoundError');
 const { BadRequestError } = require('../errors/BadRequestError');
+const {
+  badRequestErrorMsg, conflictErrorMsg, userNotFoundMsg, incorrectCredentialsMsg,
+} = require('../utils/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -20,7 +23,7 @@ const getCurrentUser = (req, res, next) => {
     })
     .catch((err) => {
       err.name === 'DocumentNotFoundError'
-        ? next(new ResourceNotFoundError('Could not find requested user'))
+        ? next(new ResourceNotFoundError(userNotFoundMsg))
         : next(err);
     });
 };
@@ -33,7 +36,7 @@ const createUser = (req, res, next) => {
     .then((account) => {
       if (account) {
         return Promise.reject(
-          new ConflictError('This email has already been taken!'),
+          new ConflictError(conflictErrorMsg),
         );
       }
       bcrypt
@@ -45,13 +48,13 @@ const createUser = (req, res, next) => {
         })
         .catch((err) => {
           err.name === 'ValidationError'
-            ? next(new BadRequestError('Invalid data submitted'))
+            ? next(new BadRequestError(badRequestErrorMsg))
             : next(err);
         });
     })
     .catch((err) => {
       err.name === 'ValidationError'
-        ? next(new BadRequestError('Invalid data submitted'))
+        ? next(new BadRequestError(badRequestErrorMsg))
         : next(err);
     });
 };
@@ -65,7 +68,7 @@ const login = (req, res, next) => {
     .then((account) => {
       if (!account) {
         return Promise.reject(
-          new UnauthorizedError('Incorrect email or password'),
+          new UnauthorizedError(incorrectCredentialsMsg),
         );
       }
       user = account;
@@ -74,7 +77,7 @@ const login = (req, res, next) => {
     .then((authenticated) => {
       if (!authenticated) {
         return Promise.reject(
-          new UnauthorizedError('Incorrect email or password'),
+          new UnauthorizedError(incorrectCredentialsMsg),
         );
       }
       const token = jwt.sign(

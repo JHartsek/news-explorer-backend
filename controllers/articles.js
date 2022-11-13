@@ -2,6 +2,9 @@ const { articleModel } = require('../models/article');
 const { ForbiddenActionError } = require('../errors/ForbiddenActionError');
 const { ResourceNotFoundError } = require('../errors/ResourceNotFoundError');
 const { BadRequestError } = require('../errors/BadRequestError');
+const {
+  badRequestErrorMsg, articleDeletedMsg, forbiddenActionErrorMsg, articleNotFoundMsg,
+} = require('../utils/constants');
 
 const getSavedArticles = (req, res, next) => {
   articleModel
@@ -36,7 +39,7 @@ const saveArticle = (req, res, next) => {
     })
     .catch((err) => {
       err.name === 'ValidationError'
-        ? next(new BadRequestError('Invalid data submitted'))
+        ? next(new BadRequestError(badRequestErrorMsg))
         : next(err);
     });
 };
@@ -54,15 +57,15 @@ const deleteArticle = (req, res, next) => {
           .findByIdAndRemove(req.params.articleId)
           .orFail()
           .then(() => {
-            res.send({ message: 'Article removed!' });
+            res.send({ message: articleDeletedMsg });
           });
         return;
       }
-      throw new ForbiddenActionError("Can't delete another user's articles");
+      throw new ForbiddenActionError(forbiddenActionErrorMsg);
     })
     .catch((err) => {
       err.name === 'DocumentNotFoundError'
-        ? next(new ResourceNotFoundError('Could not find requested article'))
+        ? next(new ResourceNotFoundError(articleNotFoundMsg))
         : next(err);
     });
 };
