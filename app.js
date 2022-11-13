@@ -18,8 +18,8 @@ app.use(helmet());
 // app.use(limiter);
 require('dotenv').config();
 
-const { PORT = 3000, dbAddress = 'mongodb://localhost:27017/news' } = process.env;
-mongoose.connect(dbAddress);
+const { PORT = 3000, DATABASE = 'mongodb://localhost:27017/news' } = process.env;
+mongoose.connect(DATABASE);
 
 app.use(requestLogger);
 
