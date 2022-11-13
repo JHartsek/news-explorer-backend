@@ -8,7 +8,7 @@ const {
 
 const getSavedArticles = (req, res, next) => {
   articleModel
-    .find({})
+    .find({ owner: req.user._id })
     .then((articles) => {
       res.send(articles);
     })
@@ -21,7 +21,7 @@ const saveArticle = (req, res, next) => {
   const {
     keyword, title, text, date, source, link, image,
   } = req.body;
-  const owner = '637024abdf8cf20c35a80792';
+  const owner = req.user._id;
 
   articleModel
     .create({
@@ -45,7 +45,7 @@ const saveArticle = (req, res, next) => {
 };
 
 const deleteArticle = (req, res, next) => {
-  const user = '637024abdf8cf20c35a80792';
+  const user = req.user._id;
   let selectedArticleOwner;
   articleModel
     .findById(req.params.articleId)
