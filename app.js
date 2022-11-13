@@ -4,8 +4,6 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 // const { limiter } = require('./utils/limiter');
-const { validateCreateUser, validateLogin } = require('./helpers/validators');
-const { createUser, login } = require('./controllers/users');
 const { router } = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const errorHandler = require('./middleware/errors');
@@ -23,8 +21,6 @@ mongoose.connect(DATABASE);
 
 app.use(requestLogger);
 
-app.post('/signup', validateCreateUser, createUser);
-app.post('/signin', validateLogin, login);
 app.use(router);
 
 app.use(errorLogger);
