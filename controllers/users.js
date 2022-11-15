@@ -9,6 +9,8 @@ const {
   badRequestErrorMsg, conflictErrorMsg, userNotFoundMsg, incorrectCredentialsMsg,
 } = require('../utils/constants');
 
+require('dotenv').config();
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const { userModel } = require('../models/user');

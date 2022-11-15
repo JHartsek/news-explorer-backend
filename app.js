@@ -13,10 +13,9 @@ app.use(cors());
 app.options('*', cors());
 app.use(express.json());
 app.use(helmet());
-require('dotenv').config();
 
-const { PORT = 3000, DATABASE = 'mongodb://localhost:27017/news' } = process.env;
-mongoose.connect(DATABASE);
+const PORT = 3000;
+mongoose.connect('mongodb://localhost:27017/news');
 
 app.use(requestLogger);
 app.use(limiter);
