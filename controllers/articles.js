@@ -3,7 +3,9 @@ const { ForbiddenActionError } = require('../errors/ForbiddenActionError');
 const { ResourceNotFoundError } = require('../errors/ResourceNotFoundError');
 const { BadRequestError } = require('../errors/BadRequestError');
 const {
-  badRequestErrorMsg, articleDeletedMsg, forbiddenActionErrorMsg, articleNotFoundMsg,
+  badRequestErrorMsg,
+  forbiddenActionErrorMsg,
+  articleNotFoundMsg,
 } = require('../utils/constants');
 
 const getSavedArticles = (req, res, next) => {
@@ -57,7 +59,14 @@ const deleteArticle = (req, res, next) => {
           .findByIdAndRemove(req.params.articleId)
           .orFail()
           .then(() => {
-            res.send({ message: articleDeletedMsg });
+            articleModel
+              .find({ owner: req.user._id })
+              .then((articles) => {
+                res.send(articles);
+              })
+              .catch((err) => {
+                next(err);
+              });
           });
         return;
       }
